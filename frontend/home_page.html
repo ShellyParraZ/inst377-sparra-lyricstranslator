@@ -19,7 +19,32 @@
       </ul>
     </nav>
     <!--Line Separator-->
+    <hr />
     <!--Song Details Section-->
-    <!--Lyric Sample Section-->
+    <form id="songForm">
+      <label for="song_title">Song Title:</label>
+      <input type="text" id="song_title" required />
+      <br />
+      <label for="artist">Artist:</label>
+      <input type="text" id="artist" required />
+      <br />
+      <select id="original_language" name="original_language" required></select>
+      <select id="target_language" name="target_language" required></select>
+      <br />
+      <button id="translateButton" type="submit">Translate</button>
+      <button id="restartButton" type="submit">Restart</button>
+    </form>
+    <!--Lyrics Preview Section-->
+    <h3>Preview</h3>
+    <div class="original_lyrics">
+      <h4>Original</h4>
+      <p></p>
+    </div>
+    <div class="translated_lyrics">
+      <h4>Translated</h4>
+      <p></p>
+    </div>
+    <!--Full Lyrics Button-->
+    <button id="fullLyricsButton" type="submit">View Full Lyrics</button>
   </body>
 </html>
