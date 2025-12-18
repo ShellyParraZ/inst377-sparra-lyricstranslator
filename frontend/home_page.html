@@ -2,6 +2,7 @@
   <head>
     <title>INST 377 Final Project</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body style="background-color: rgb(157, 188, 226)">
     <header>
@@ -60,6 +61,8 @@
     // variables
     const original_language = document.getElementById("original_language");
     const target_language = document.getElementById("target_language");
+    const originalBox = document.querySelector(".original_lyrics p");
+    const translatedBox = document.querySelector(".translated_lyrics p");
 
     // hardcoded languages for target and original dropdown menus
     const sourceLangDeepL = [
@@ -157,8 +160,72 @@
         target_language.appendChild(option);
       });
     }
+    populateDropdowns();
 
-    // collects all the form values
+    // CREATE SUPABASE
+    const supabaseClient = window.supabase.createClient(
+      "https://odwiadxcegkrwcxelimv.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lhZHhjZWdrcndjeGVsaW12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwMjEyODMsImV4cCI6MjA4MTU5NzI4M30.RWc7FOjKHiyTQL_pkVu3UBJ8gUJvcoA2a7vgdMe4QVw"
+    );
+
+    console.log("Supabase client:", supabaseClient); // works
+
+    // USER: clicks Translate button
+    async function saveTranslation(
+      id,
+      title,
+      artist,
+      originalLang,
+      targetLang,
+      originalLyrics,
+      translatedLyrics
+    ) {
+      // check if this translation already exists
+      const { data: existing, error: selectError } = await supabaseClient
+        .from("lyrics_data")
+        .select("*")
+        .eq("title", title)
+        .eq("artist", artist)
+        .eq("original_lang", originalLang)
+        .eq("target_lang", targetLang)
+        .limit(1);
+
+      if (selectError) {
+        console.error("Supabase select error:", selectError);
+        return null;
+      }
+
+      if (existing && existing.length > 0) {
+        console.log("Translation found:", existing[0]);
+        return existing[0]; // return the translation
+      }
+
+      // if not found, insert it
+      const { data, error: insertError } = await supabaseClient
+        .from("lyrics_data")
+        .insert([
+          {
+            id,
+            title,
+            artist,
+            original_lang: originalLang,
+            target_lang: targetLang,
+            original_lyrics: originalLyrics,
+            translated_lyrics: translatedLyrics,
+          },
+        ])
+        .select();
+
+      if (insertError) {
+        console.error("Supabase insert error:", insertError);
+        return null;
+      }
+
+      console.log("Translation saved:", data[0]);
+      return data[0];
+    }
+
+    // COLLECT all the details
     document
       .getElementById("songForm")
       .addEventListener("submit", async (details) => {
@@ -170,9 +237,28 @@
         const targetLang = document.getElementById("target_language").value;
 
         console.log({ title, artist, originalLang, targetLang });
-      });
 
-    // run funtions
-    populateDropdowns();
+        // Checking to see if all is working
+        const id = Date.now();
+        const originalLyrics = "temporary";
+        const translatedLyrics = "temporary";
+
+        // Check or save translation
+        const translation = await saveTranslation(
+          id,
+          title,
+          artist,
+          originalLang,
+          targetLang,
+          originalLyrics,
+          translatedLyrics
+        );
+
+        // Update page preview
+        if (translation) {
+          originalBox.textContent = translation.original_lyrics;
+          translatedBox.textContent = translation.translated_lyrics;
+        }
+      });
   </script>
 </html>
