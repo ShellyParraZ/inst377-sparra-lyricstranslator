@@ -18,6 +18,10 @@
   text-decoration: none;
 }
 
+#nav_bar a:hover {
+  color: rgb(28, 7, 216);
+}
+
 hr {
   border: none;
   height: 1px;
@@ -80,4 +84,17 @@ h2 {
   margin-left: 12%;
   background-color: transparent;
   color: rgb(18, 13, 179);
+  border: transparent;
+}
+
+#translateButton:hover,
+#restartButton:hover {
+  background-color: #5f82e4;
+  font-size: 15px;
+  font-weight: bold;
+  color: azure;
+}
+
+#fullLyricsButton:hover {
+  font-size: 18px;
 }
