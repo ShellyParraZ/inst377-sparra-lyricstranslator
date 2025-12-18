@@ -162,69 +162,9 @@
     }
     populateDropdowns();
 
-    // CREATE SUPABASE
-    const supabaseClient = window.supabase.createClient(
-      "https://odwiadxcegkrwcxelimv.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lhZHhjZWdrcndjeGVsaW12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwMjEyODMsImV4cCI6MjA4MTU5NzI4M30.RWc7FOjKHiyTQL_pkVu3UBJ8gUJvcoA2a7vgdMe4QVw"
-    );
-
-    console.log("Supabase client:", supabaseClient); // works
+    // CREATE SUPABASE IN BACKEND
 
     // USER: clicks Translate button
-    async function saveTranslation(
-      id,
-      title,
-      artist,
-      originalLang,
-      targetLang,
-      originalLyrics,
-      translatedLyrics
-    ) {
-      // check if this translation already exists
-      const { data: existing, error: selectError } = await supabaseClient
-        .from("lyrics_data")
-        .select("*")
-        .eq("title", title)
-        .eq("artist", artist)
-        .eq("original_lang", originalLang)
-        .eq("target_lang", targetLang)
-        .limit(1);
-
-      if (selectError) {
-        console.error("Supabase select error:", selectError);
-        return null;
-      }
-
-      if (existing && existing.length > 0) {
-        console.log("Translation found:", existing[0]);
-        return existing[0]; // return the translation
-      }
-
-      // if not found, insert it
-      const { data, error: insertError } = await supabaseClient
-        .from("lyrics_data")
-        .insert([
-          {
-            id,
-            title,
-            artist,
-            original_lang: originalLang,
-            target_lang: targetLang,
-            original_lyrics: originalLyrics,
-            translated_lyrics: translatedLyrics,
-          },
-        ])
-        .select();
-
-      if (insertError) {
-        console.error("Supabase insert error:", insertError);
-        return null;
-      }
-
-      console.log("Translation saved:", data[0]);
-      return data[0];
-    }
-
     // COLLECT all the details
     document
       .getElementById("songForm")
@@ -238,26 +178,33 @@
 
         console.log({ title, artist, originalLang, targetLang });
 
-        // Checking to see if all is working
-        const id = Date.now();
         const originalLyrics = "temporary";
         const translatedLyrics = "temporary";
 
-        // Check or save translation
-        const translation = await saveTranslation(
-          id,
-          title,
-          artist,
-          originalLang,
-          targetLang,
-          originalLyrics,
-          translatedLyrics
-        );
+        try {
+          const response = await fetch("/api/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title,
+              artist,
+              originalLang,
+              targetLang,
+              originalLyrics,
+              translatedLyrics,
+            }),
+          });
 
-        // Update page preview
-        if (translation) {
-          originalBox.textContent = translation.original_lyrics;
-          translatedBox.textContent = translation.translated_lyrics;
+          const translation = await response.json();
+
+          if (response.ok) {
+            originalBox.textContent = translation.original_lyrics;
+            translatedBox.textContent = translation.translated_lyrics;
+          } else {
+            console.error("Error from backend:", translation.error);
+          }
+        } catch (e) {
+          console.error("Error:", e);
         }
       });
   </script>
