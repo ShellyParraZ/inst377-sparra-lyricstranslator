@@ -1,19 +1,20 @@
 <html>
-  <header class="header">
+  <head>
     <title>INST 377 Final Project</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/supabase.min.js"></script>
-    <h1>Lyrics Translator</h1>
-    <!--Navigation Section-->
-    <nav id="nav_bar">
-      <ul>
-        <li><a href="home_page.html">Home</a></li>
-        <li><a href="full_lyrics.html">Full Lyrics</a></li>
-        <li><a href="about_page.html">About</a></li>
-      </ul>
-    </nav>
-  </header>
+  </head>
   <body style="background-color: rgb(157, 188, 226)">
+    <header>
+      <h1>Lyrics Translator</h1>
+      <!--Navigation Section-->
+      <nav id="nav_bar">
+        <ul>
+          <li><a href="home_page.html">Home</a></li>
+          <li><a href="full_lyrics.html">Full Lyrics</a></li>
+          <li><a href="about_page.html">About</a></li>
+        </ul>
+      </nav>
+    </header>
     <!--Line Separator-->
     <hr />
     <br />
@@ -57,13 +58,107 @@
   <!--Javascript Section-->
   <script>
     // variables
-    const supabaseUrl = "https://odwiadxcegkrwcxelimv.supabase.co";
-    const supabaseKey =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kd2lhZHhjZWdrcndjeGVsaW12Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYwMjEyODMsImV4cCI6MjA4MTU5NzI4M30.RWc7FOjKHiyTQL_pkVu3UBJ8gUJvcoA2a7vgdMe4QVw";
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
     const original_language = document.getElementById("original_language");
     const target_language = document.getElementById("target_language");
-    
-    
+
+    // hardcoded languages for
+    const sourceLangDeepL = [
+      { code: "AR", name: "Arabic" },
+      { code: "BG", name: "Bulgarian" },
+      { code: "CS", name: "Czech" },
+      { code: "DA", name: "Danish" },
+      { code: "DE", name: "German" },
+      { code: "EL", name: "Greek" },
+      { code: "EN", name: "English" },
+      { code: "ES", name: "Spanish" },
+      { code: "ET", name: "Estonian" },
+      { code: "FI", name: "Finnish" },
+      { code: "FR", name: "French" },
+      { code: "HE", name: "Hebrew" },
+      { code: "HU", name: "Hungarian" },
+      { code: "ID", name: "Indonesian" },
+      { code: "IT", name: "Italian" },
+      { code: "JA", name: "Japanese" },
+      { code: "KO", name: "Korean" },
+      { code: "LT", name: "Lithuanian" },
+      { code: "LV", name: "Latvian" },
+      { code: "NB", name: "Norwegian Bokmål" },
+      { code: "NL", name: "Dutch" },
+      { code: "PL", name: "Polish" },
+      { code: "PT", name: "Portuguese" },
+      { code: "RO", name: "Romanian" },
+      { code: "RU", name: "Russian" },
+      { code: "SK", name: "Slovak" },
+      { code: "SL", name: "Slovenian" },
+      { code: "SV", name: "Swedish" },
+      { code: "TH", name: "Thai" },
+      { code: "TR", name: "Turkish" },
+      { code: "UK", name: "Ukrainian" },
+      { code: "VI", name: "Vietnamese" },
+      { code: "ZH", name: "Chinese" },
+    ];
+
+    const targetLangDeepL = [
+      { code: "AR", name: "Arabic" },
+      { code: "BG", name: "Bulgarian" },
+      { code: "CS", name: "Czech" },
+      { code: "DA", name: "Danish" },
+      { code: "DE", name: "German" },
+      { code: "EL", name: "Greek" },
+      { code: "EN", name: "English" },
+      { code: "EN-GB", name: "English (British)" },
+      { code: "EN-US", name: "English (American)" },
+      { code: "ES", name: "Spanish" },
+      { code: "ES-419", name: "Spanish (Latin American)" },
+      { code: "ET", name: "Estonian" },
+      { code: "FI", name: "Finnish" },
+      { code: "FR", name: "French" },
+      { code: "HE", name: "Hebrew" },
+      { code: "HU", name: "Hungarian" },
+      { code: "ID", name: "Indonesian" },
+      { code: "IT", name: "Italian" },
+      { code: "JA", name: "Japanese" },
+      { code: "KO", name: "Korean" },
+      { code: "LT", name: "Lithuanian" },
+      { code: "LV", name: "Latvian" },
+      { code: "NB", name: "Norwegian Bokmål" },
+      { code: "NL", name: "Dutch" },
+      { code: "PL", name: "Polish" },
+      { code: "PT", name: "Portuguese" },
+      { code: "PT-BR", name: "Portuguese (Brazilian)" },
+      { code: "PT-PT", name: "Portuguese (all variants except Brazilian)" },
+      { code: "RO", name: "Romanian" },
+      { code: "RU", name: "Russian" },
+      { code: "SK", name: "Slovak" },
+      { code: "SL", name: "Slovenian" },
+      { code: "SV", name: "Swedish" },
+      { code: "TH", name: "Thai" },
+      { code: "TR", name: "Turkish" },
+      { code: "UK", name: "Ukrainian" },
+      { code: "VI", name: "Vietnamese" },
+      { code: "ZH", name: "Chinese" },
+      { code: "ZH-HANS", name: "Chinese (simplified)" },
+      { code: "ZH-HANT", name: "Chinese (traditional)" },
+    ];
+
+    // adding the languages to the original_language and target_language dropdown menus
+    function populateDropdowns() {
+      sourceLangDeepL.forEach((lang) => {
+        const option = document.createElement("option");
+        option.value = lang.code;
+        option.textContent = lang.name;
+        original_language.appendChild(option);
+      });
+
+      targetLangDeepL.forEach((lang) => {
+        const option = document.createElement("option");
+        option.value = lang.code;
+        option.textContent = lang.name;
+        target_language.appendChild(option);
+      });
+    }
+
+    // run funtions
+    populateDropdowns();
   </script>
 </html>
