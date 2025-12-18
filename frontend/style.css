@@ -49,8 +49,35 @@ hr {
   margin-left: 5%;
 }
 
-#fullLyricsButton,
 #translateButton,
 #restartButton {
   border-radius: 7px;
+}
+
+h2 {
+  margin-left: 5%;
+}
+
+.original_lyrics,
+.translated_lyrics {
+  width: 500;
+  background-color: rgb(255, 255, 255);
+  border-radius: 2px;
+  padding: auto;
+  padding-left: 1%;
+  flex-direction: column;
+  border: 1px solid #011294;
+}
+
+.lyric_boxes {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+}
+
+#fullLyricsButton {
+  margin-left: 12%;
+  background-color: transparent;
+  color: rgb(18, 13, 179);
 }
