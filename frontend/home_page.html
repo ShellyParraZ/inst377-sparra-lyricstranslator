@@ -15,19 +15,24 @@
   <body style="background-color: rgb(157, 188, 226)">
     <!--Line Separator-->
     <hr />
+    <br />
     <!--Song Details Section-->
     <form id="songForm">
-      <label for="song_title">Song Title:</label>
-      <input type="text" id="song_title" required />
+      <input type="text" id="song_title" placeholder="Song Title" required />
       <br />
-      <label for="artist">Artist:</label>
-      <input type="text" id="artist" required />
+      <input type="text" id="artist" placeholder="Artist" required />
       <br />
-      <select id="original_language" name="original_language" required></select>
-      <select id="target_language" name="target_language" required></select>
+      <select id="original_language" name="original_language" required>
+        <option value="" disabled selected>Original Language</option>
+      </select>
+      <select id="target_language" name="target_language" required>
+        <option value="" disabled selected>Target Language</option>
+      </select>
       <br />
-      <button id="translateButton" type="submit">Translate</button>
-      <button id="restartButton" type="submit">Restart</button>
+      <div class="buttons">
+        <button id="translateButton" type="submit">Translate</button>
+        <button id="restartButton" type="submit">Restart</button>
+      </div>
     </form>
     <!--Lyrics Preview Section-->
     <h3>Preview</h3>

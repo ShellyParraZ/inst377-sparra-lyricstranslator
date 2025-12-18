@@ -17,3 +17,40 @@
   font-weight: 500;
   text-decoration: none;
 }
+
+hr {
+  border: none;
+  height: 1px;
+  background-color: #000000;
+}
+
+#song_title,
+#artist {
+  width: 300;
+  margin: 4;
+  margin-left: 5%;
+  padding: 5px 5px;
+}
+
+#original_language {
+  width: 160;
+  margin: 4;
+  margin-left: 5%;
+  padding: 5px 5px;
+}
+
+#target_language {
+  width: 145;
+  padding: 5px 5px;
+}
+
+.buttons {
+  margin: 4;
+  margin-left: 5%;
+}
+
+#fullLyricsButton,
+#translateButton,
+#restartButton {
+  border-radius: 7px;
+}
