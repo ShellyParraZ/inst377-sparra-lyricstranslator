@@ -35,7 +35,7 @@
       <br />
       <div class="buttons">
         <button id="translateButton" type="submit">Translate</button>
-        <button id="restartButton" type="submit">Restart</button>
+        <button id="restartButton" type="button">Restart</button>
       </div>
     </form>
     <!--Lyrics Preview Section-->
@@ -207,5 +207,22 @@
           console.error("Error:", e);
         }
       });
+
+    // RESTARTS THE FORM THROUGH RESTART BUTTON
+    document.getElementById("restartButton").addEventListener("click", () => {
+      // clears text inputs
+      document.getElementById("song_title").value = "";
+      document.getElementById("artist").value = "";
+
+      // resets dropdown menus
+      document.getElementById("original_language").selectedIndex = 0;
+      document.getElementById("target_language").selectedIndex = 0;
+
+      // clears the preview text
+      originalBox.textContent = "";
+      translatedBox.textContent = "";
+
+      console.log("Restarts Form");
+    });
   </script>
 </html>
