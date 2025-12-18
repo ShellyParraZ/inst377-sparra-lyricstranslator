@@ -61,7 +61,7 @@
     const original_language = document.getElementById("original_language");
     const target_language = document.getElementById("target_language");
 
-    // hardcoded languages for
+    // hardcoded languages for target and original dropdown menus
     const sourceLangDeepL = [
       { code: "AR", name: "Arabic" },
       { code: "BG", name: "Bulgarian" },
@@ -157,6 +157,20 @@
         target_language.appendChild(option);
       });
     }
+
+    // collects all the form values
+    document
+      .getElementById("songForm")
+      .addEventListener("submit", async (details) => {
+        details.preventDefault(); // stop page from refreshing
+
+        const title = document.getElementById("song_title").value;
+        const artist = document.getElementById("artist").value;
+        const originalLang = document.getElementById("original_language").value;
+        const targetLang = document.getElementById("target_language").value;
+
+        console.log({ title, artist, originalLang, targetLang });
+      });
 
     // run funtions
     populateDropdowns();
