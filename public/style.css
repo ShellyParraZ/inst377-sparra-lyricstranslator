@@ -98,3 +98,11 @@ h2 {
 #fullLyricsButton:hover {
   font-size: 18px;
 }
+
+.original_lyrics p,
+.translated_lyrics p {
+  /* This allows the user to scroll through the lyrics. */
+  max-height: 400px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
