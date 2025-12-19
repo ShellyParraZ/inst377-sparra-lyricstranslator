@@ -202,6 +202,26 @@
 
         console.log("Form Restarted");
       });
+
+      // FULL LYRICS BUTTON: opens the full_lyrics.html page and shows the lyrics
+      document
+        .getElementById("fullLyricsButton")
+        .addEventListener("click", () => {
+          const originalLyrics = originalBox.textContent;
+
+          // Provides an alert if there are no lyrics to display
+          if (!originalLyrics) {
+            alert("!!!No lyrics to display!!!");
+            return;
+          }
+
+          // Saves the lyrics so the next page can read them
+          localStorage.setItem("fullLyrics", originalLyrics);
+
+          // Goes to the full lyrics page
+          window.location.href = "full_lyrics.html";
+          console.log("Full lyrics button clicked");
+        });
     };
 
     // fetching the lyrics
