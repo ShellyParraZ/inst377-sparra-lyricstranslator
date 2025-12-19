@@ -20,7 +20,7 @@
     <hr />
     <br />
     <!--Song Details Section-->
-    <h2>Song Details</h2>
+    <h2 id="h2_HP">Song Details</h2>
     <form id="songForm">
       <input type="text" id="song_title" placeholder="Song Title" required />
       <br />
@@ -41,7 +41,7 @@
     <!--Lyrics Preview Section-->
     <br />
     <div class="lyricsPreview">
-      <h2>Preview</h2>
+      <h2 id="h2_HP">Preview</h2>
       <div class="lyric_boxes">
         <div class="original_lyrics">
           <h4>Original</h4>
@@ -184,6 +184,25 @@
           const originalLyrics = await getLyrics(artist, title);
           originalBox.textContent = originalLyrics;
           translatedBox.textContent = "temporary";
+
+          // getting the original and target language for the full_lyrics page
+          const originalLangCode =
+            document.getElementById("original_language").value;
+          const targetLangCode =
+            document.getElementById("target_language").value;
+
+          // Get readable names from selected options
+          const originalLangName =
+            document.getElementById("original_language").selectedOptions[0]
+              .textContent;
+
+          const targetLangName =
+            document.getElementById("target_language").selectedOptions[0]
+              .textContent;
+
+          // Save to localStorage
+          localStorage.setItem("originalLangName", originalLangName);
+          localStorage.setItem("targetLangName", targetLangName);
         });
 
       // RESTARTS THE FORM THROUGH RESTART BUTTON
@@ -220,7 +239,7 @@
 
           // Goes to the full lyrics page
           window.location.href = "full_lyrics.html";
-          console.log("Full lyrics button clicked");
+          console.log("Full lyrics button clicked.");
         });
     };
 

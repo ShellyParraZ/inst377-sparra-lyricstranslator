@@ -60,7 +60,7 @@ hr {
   border-radius: 7px;
 }
 
-h2 {
+h2_HP {
   margin-left: 5%;
 }
 
@@ -111,7 +111,12 @@ h2 {
 
 /* Full Lyrics Page */
 
-.fullOriginalLyricsBox {
+#h2_FL {
+  text-align: center;
+}
+
+.fullOriginalLyricsBox,
+.fullTargetLyricsBox {
   margin: 20px auto;
   width: 90%;
   max-width: 1000px;
@@ -123,9 +128,15 @@ h2 {
   overflow-y: auto;
 }
 
-.fullLyricsText {
+.fullLyricsText,
+.fullTargetLyricsText {
   white-space: pre-wrap;
   color: black;
   font-size: 16px;
   line-height: 1.5;
+}
+
+#o_langTitle,
+#t_langTitle {
+  margin-left: 5%;
 }
