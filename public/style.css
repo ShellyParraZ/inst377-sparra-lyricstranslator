@@ -1,3 +1,5 @@
+/* Home Page */
+
 header {
   display: flex;
   align-items: center;
@@ -99,10 +101,31 @@ h2 {
   font-size: 18px;
 }
 
-.original_lyrics p,
-.translated_lyrics p {
+.original_lyrics pre,
+.translated_lyrics pre {
   /* This allows the user to scroll through the lyrics. */
   max-height: 400px;
   overflow-y: auto;
   white-space: pre-wrap;
+}
+
+/* Full Lyrics Page */
+
+.fullOriginalLyricsBox {
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+  height: 250px;
+  background-color: rgba(209, 208, 235, 0.544);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #011294;
+  overflow-y: auto;
+}
+
+.fullLyricsText {
+  white-space: pre-wrap;
+  color: black;
+  font-size: 16px;
+  line-height: 1.5;
 }

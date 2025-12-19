@@ -20,5 +20,23 @@
     <hr />
     <br />
     <!--Full Lyrics Display-->
+    <h2>Full Lyrics Display</h2>
+    <div class="fullOriginalLyricsBox">
+      <pre id="fullLyricsText" class="fullLyricsText"></pre>
+    </div>
   </body>
+  <script>
+    window.onload = () => {
+      const lyrics = localStorage.getItem("fullLyrics"); // getting full lyrics from Home Page (if it exists)
+      const lyricsBox = document.getElementById("fullLyricsText"); // getting empty fullLyricsText
+
+      if (!lyrics) {
+        // if lyrics exist (not empty), then make fullLyricsText contain the lyrics
+        lyricsBox.textContent = "No lyrics available.";
+        return;
+      }
+
+      lyricsBox.textContent = lyrics;
+    };
+  </script>
 </html>

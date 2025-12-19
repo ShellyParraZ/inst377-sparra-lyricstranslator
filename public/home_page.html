@@ -45,11 +45,11 @@
       <div class="lyric_boxes">
         <div class="original_lyrics">
           <h4>Original</h4>
-          <p></p>
+          <pre></pre>
         </div>
         <div class="translated_lyrics">
           <h4>Translated</h4>
-          <p></p>
+          <pre></pre>
         </div>
       </div>
     </div>
@@ -62,8 +62,8 @@
       // variables
       const original_language = document.getElementById("original_language");
       const target_language = document.getElementById("target_language");
-      const originalBox = document.querySelector(".original_lyrics p");
-      const translatedBox = document.querySelector(".translated_lyrics p");
+      const originalBox = document.querySelector(".original_lyrics pre");
+      const translatedBox = document.querySelector(".translated_lyrics pre");
 
       // hardcoded languages for target and original dropdown menus
       const sourceLangDeepL = [
