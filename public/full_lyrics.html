@@ -2,7 +2,6 @@
   <head>
     <title>INST 377 Final Project</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body style="background-color: rgb(157, 188, 226)">
     <header>
@@ -40,8 +39,13 @@
       const originalHeader = document.getElementById("o_langTitle");
       const targetHeader = document.getElementById("t_langTitle");
 
-      const lyrics = localStorage.getItem("fullLyrics"); // getting full lyrics from Home Page (if it exists)
-      const lyricsBox = document.getElementById("fullOriginalLyricsText"); // getting empty fullLyricsText
+      // getting full original and target lyrics from Home Page (if it exists)
+      const o_lyrics = localStorage.getItem("fullLyrics");
+      const t_lyrics = localStorage.getItem("translatedLyrics");
+
+      // getting empty fullLyricsText
+      const o_lyricsBox = document.getElementById("fullOriginalLyricsText");
+      const t_lyricsBox = document.getElementById("fullTargetLyricsText");
 
       // setting the languages in the headers/titles
       if (original_langDropdown) {
@@ -52,16 +56,25 @@
       if (target_langDropdown) {
         targetHeader.textContent = `Translated Lyrics (${target_langDropdown})`;
       } else {
-        targetHeader.textContent = "Original Lyrics";
+        targetHeader.textContent = "Translated Lyrics";
       }
 
-      if (!lyrics) {
-        // if lyrics exist (not empty), then make fullLyricsText contain the lyrics
-        lyricsBox.textContent = "No lyrics available.";
-        return;
+      // original lyrics
+      if (o_lyrics) {
+        o_lyricsBox.textContent = o_lyrics;
+      } else {
+        o_lyricsBox.textContent = "No lyrics available.";
       }
 
-      lyricsBox.textContent = lyrics;
+      // translated lyrics
+      if (t_lyrics) {
+        t_lyricsBox.textContent = t_lyrics;
+      } else {
+        t_lyricsBox.textContent = "No translation available.";
+      }
+
+      o_lyricsBox.textContent = o_lyrics;
+      t_lyricsBox.textContent = t_lyrics;
     };
   </script>
 </html>

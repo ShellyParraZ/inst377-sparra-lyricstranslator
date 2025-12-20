@@ -2,7 +2,6 @@
   <head>
     <title>INST 377 Final Project</title>
     <link rel="stylesheet" href="style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body style="background-color: rgb(157, 188, 226)">
     <header>
@@ -27,10 +26,10 @@
       <input type="text" id="artist" placeholder="Artist" required />
       <br />
       <select id="original_language" name="original_language" required>
-        <option value="" disabled>Original Language</option>
+        <option value="" disabled selected>Original Language</option>
       </select>
       <select id="target_language" name="target_language" required>
-        <option value="" disabled>Target Language</option>
+        <option value="" disabled selected>Target Language</option>
       </select>
       <br />
       <div class="buttons">
@@ -163,8 +162,6 @@
       }
       populateDropdowns();
 
-      // CREATE SUPABASE IN BACKEND
-
       // USER: clicks Translate button
       // COLLECT all the details
       document
@@ -174,35 +171,56 @@
 
           const title = document.getElementById("song_title").value;
           const artist = document.getElementById("artist").value;
-          const originalLang =
-            document.getElementById("original_language").value;
-          const targetLang = document.getElementById("target_language").value;
+          const originalLang = original_language.value;
+          const targetLang = target_language.value;
 
           console.log({ title, artist, originalLang, targetLang });
+
+          // temporary loading messages
+          originalBox.textContent = "lyrics are loading...";
+          translatedBox.textContent = "lyrics are translating...";
 
           // fetching original lyrics from Lyrics.oh API
           const originalLyrics = await getLyrics(artist, title);
           originalBox.textContent = originalLyrics;
-          translatedBox.textContent = "temporary";
 
-          // getting the original and target language for the full_lyrics page
-          const originalLangCode =
-            document.getElementById("original_language").value;
-          const targetLangCode =
-            document.getElementById("target_language").value;
+          // FETCHING TRANSLATE for lyrics
+          try {
+            const response = await fetch("/api", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                title,
+                artist,
+                originalLang,
+                targetLang,
+                originalLyrics,
+              }),
+            });
 
-          // Get readable names from selected options
-          const originalLangName =
-            document.getElementById("original_language").selectedOptions[0]
-              .textContent;
+            const data = await response.json();
 
-          const targetLangName =
-            document.getElementById("target_language").selectedOptions[0]
-              .textContent;
+            if (!response.ok) {
+              throw new Error(data.error || "Translation failed");
+            }
 
-          // Save to localStorage
-          localStorage.setItem("originalLangName", originalLangName);
-          localStorage.setItem("targetLangName", targetLangName);
+            translatedBox.textContent = data.translated_lyrics;
+
+            localStorage.setItem("fullLyrics", data.original_lyrics);
+            localStorage.setItem("translatedLyrics", data.translated_lyrics);
+            localStorage.setItem(
+              "originalLangName",
+              original_language.options[original_language.selectedIndex].text
+            );
+
+            localStorage.setItem(
+              "targetLangName",
+              target_language.options[target_language.selectedIndex].text
+            );
+          } catch (translateErr) {
+            console.error(translateErr);
+            translatedBox.textContent = "Error translating lyrics.";
+          }
         });
 
       // RESTARTS THE FORM THROUGH RESTART BUTTON
@@ -227,6 +245,7 @@
         .getElementById("fullLyricsButton")
         .addEventListener("click", () => {
           const originalLyrics = originalBox.textContent;
+          const translatedLyrics = translatedBox.textContent;
 
           // Provides an alert if there are no lyrics to display
           if (!originalLyrics) {
@@ -236,6 +255,7 @@
 
           // Saves the lyrics so the next page can read them
           localStorage.setItem("fullLyrics", originalLyrics);
+          localStorage.setItem("translatedLyrics", translatedLyrics);
 
           // Goes to the full lyrics page
           window.location.href = "full_lyrics.html";
