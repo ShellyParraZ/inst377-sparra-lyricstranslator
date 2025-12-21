@@ -1,4 +1,4 @@
-/* Home Page */
+/* All Pages */
 
 header {
   display: flex;
@@ -30,6 +30,8 @@ hr {
   background-color: #000000;
 }
 
+/* Home Page */
+
 #song_title,
 #artist {
   width: 300;
@@ -60,19 +62,20 @@ hr {
   border-radius: 7px;
 }
 
-#h2_HP { 
+#h2_HP {
   margin-left: 5%;
 }
 
 .original_lyrics,
 .translated_lyrics {
   width: 500;
-  background-color: rgb(255, 255, 255);
+  background-color: rgba(209, 208, 235, 0.544);
   border-radius: 2px;
   padding: 5px;
   padding-left: 1%;
   flex-direction: column;
   border: 1px solid #011294;
+  border-radius: 8px;
 }
 
 .lyric_boxes {
@@ -139,4 +142,14 @@ hr {
 #o_langTitle,
 #t_langTitle {
   margin-left: 5%;
+}
+
+/* About Page */
+.purpose {
+  background-color: rgba(209, 208, 235, 0.544);
+  border: 1px solid #011294;
+  border-radius: 8px;
+  padding: 20px;
+  margin: 20px;
+  width: 60%;
 }
