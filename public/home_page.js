@@ -1,82 +1,223 @@
-import { createClient } from "@supabase/supabase-js";
+window.onload = () => {
+  // variables
+  const original_language = document.getElementById("original_language");
+  const target_language = document.getElementById("target_language");
+  const originalBox = document.querySelector(".original_lyrics pre");
+  const translatedBox = document.querySelector(".translated_lyrics pre");
 
-// Initialize Supabase using environment variables
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_KEY
-);
+  // hardcoded languages for target and original dropdown menus
+  const sourceLangDeepL = [
+    { code: "AR", name: "Arabic" },
+    { code: "BG", name: "Bulgarian" },
+    { code: "CS", name: "Czech" },
+    { code: "DA", name: "Danish" },
+    { code: "DE", name: "German" },
+    { code: "EL", name: "Greek" },
+    { code: "EN", name: "English" },
+    { code: "ES", name: "Spanish" },
+    { code: "ET", name: "Estonian" },
+    { code: "FI", name: "Finnish" },
+    { code: "FR", name: "French" },
+    { code: "HE", name: "Hebrew" },
+    { code: "HU", name: "Hungarian" },
+    { code: "ID", name: "Indonesian" },
+    { code: "IT", name: "Italian" },
+    { code: "JA", name: "Japanese" },
+    { code: "KO", name: "Korean" },
+    { code: "LT", name: "Lithuanian" },
+    { code: "LV", name: "Latvian" },
+    { code: "NB", name: "Norwegian Bokmål" },
+    { code: "NL", name: "Dutch" },
+    { code: "PL", name: "Polish" },
+    { code: "PT", name: "Portuguese" },
+    { code: "RO", name: "Romanian" },
+    { code: "RU", name: "Russian" },
+    { code: "SK", name: "Slovak" },
+    { code: "SL", name: "Slovenian" },
+    { code: "SV", name: "Swedish" },
+    { code: "TH", name: "Thai" },
+    { code: "TR", name: "Turkish" },
+    { code: "UK", name: "Ukrainian" },
+    { code: "VI", name: "Vietnamese" },
+    { code: "ZH", name: "Chinese" },
+  ];
 
-// DeepL API key
-const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
+  const targetLangDeepL = [
+    { code: "AR", name: "Arabic" },
+    { code: "BG", name: "Bulgarian" },
+    { code: "CS", name: "Czech" },
+    { code: "DA", name: "Danish" },
+    { code: "DE", name: "German" },
+    { code: "EL", name: "Greek" },
+    { code: "EN", name: "English" },
+    { code: "ES", name: "Spanish" },
+    { code: "ET", name: "Estonian" },
+    { code: "FI", name: "Finnish" },
+    { code: "FR", name: "French" },
+    { code: "HE", name: "Hebrew" },
+    { code: "HU", name: "Hungarian" },
+    { code: "ID", name: "Indonesian" },
+    { code: "IT", name: "Italian" },
+    { code: "JA", name: "Japanese" },
+    { code: "KO", name: "Korean" },
+    { code: "LT", name: "Lithuanian" },
+    { code: "LV", name: "Latvian" },
+    { code: "NB", name: "Norwegian Bokmål" },
+    { code: "NL", name: "Dutch" },
+    { code: "PL", name: "Polish" },
+    { code: "PT", name: "Portuguese" },
+    { code: "RO", name: "Romanian" },
+    { code: "RU", name: "Russian" },
+    { code: "SK", name: "Slovak" },
+    { code: "SL", name: "Slovenian" },
+    { code: "SV", name: "Swedish" },
+    { code: "TH", name: "Thai" },
+    { code: "TR", name: "Turkish" },
+    { code: "UK", name: "Ukrainian" },
+    { code: "VI", name: "Vietnamese" },
+    { code: "ZH", name: "Chinese" },
+  ];
 
-export default async function handler(req, res) {
-  // Blocks everything except POST
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  // adding the languages to the original_language and target_language dropdown menus
+  languages.forEach((lang) => {
+    const option1 = document.createElement("option");
+    option1.value = lang.code;
+    option1.textContent = lang.name;
+    original_language.appendChild(option1);
 
-  const { title, artist, originalLang, targetLang, originalLyrics } = req.body;
+    const option2 = document.createElement("option");
+    option2.value = lang.code;
+    option2.textContent = lang.name;
+    target_language.appendChild(option2);
+  });
 
-  if (!title || !artist || !originalLang || !targetLang || !originalLyrics) {
-    return res.status(400).json({ error: "!!!Missing required inputs!!!" });
-  }
+  // --- Simple Top 10 Popular Songs Chart ---
+  fetch("/api/popular")
+    .then((res) => res.json())
+    .then((data) => {
+      const chartDataArray = [["Song", "Popularity"]];
+      data.results.forEach((song, index) => {
+        chartDataArray.push([song.trackName, 10 - index]); // descending numbers from 10
+      });
 
-  try {
-    // Check if translation exists
-    const { data: existing, error: selectError } = await supabase
-      .from("lyrics_data")
-      .select(
-        "title, artist, original_lyrics, translated_lyrics, original_lang, target_lang"
-      )
-      .eq("title", title)
-      .eq("artist", artist)
-      .eq("original_lang", originalLang)
-      .eq("target_lang", targetLang)
-      .limit(1);
-
-    if (selectError) throw selectError;
-
-    if (existing && existing.length > 0) {
-      return res.status(200).json(existing[0]); // return previous translation
-    }
-
-    // fetching DEEPL API to get lyric translation
-    const deeplRes = await fetch("https://api-free.deepl.com/v2/translate", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        auth_key: DEEPL_API_KEY,
-        text: originalLyrics,
-        target_lang: targetLang,
-      }),
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(() => {
+        const chartData = google.visualization.arrayToDataTable(chartDataArray);
+        const options = {
+          title: "Top 10 Popular Songs",
+          legend: { position: "none" },
+        };
+        const chart = new google.visualization.ColumnChart(
+          document.getElementById("popularSongsChart")
+        );
+        chart.draw(chartData, options);
+      });
     });
 
-    if (!deeplRes.ok) {
-      const text = await deeplRes.text();
-      throw new Error(`DeepL API error: ${text}`);
+  // USER: clicks Translate button
+  // COLLECT all the details
+  document
+    .getElementById("songForm")
+    .addEventListener("submit", async (details) => {
+      details.preventDefault(); // stop page from refreshing
+
+      const title = document.getElementById("song_title").value;
+      const artist = document.getElementById("artist").value;
+      const originalLang = original_language.value;
+      const targetLang = target_language.value;
+
+      console.log({ title, artist, originalLang, targetLang });
+
+      // temporary loading messages
+      originalBox.textContent = "lyrics are loading...";
+      translatedBox.textContent = "lyrics are translating...";
+
+      // FETCHING ORIGINAL LYRICS from Lyrics.oh API
+      const originalLyrics = await getLyrics(artist, title);
+      originalBox.textContent = originalLyrics;
+
+      // FETCHING TRANSLATE for lyrics
+      try {
+        const response = await fetch("/home_page", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            artist,
+            title,
+            original_lang: originalLang,
+            target_lang: targetLang,
+            original_lyrics: originalLyrics,
+            translated_lyrics: originalLyrics,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Translation failed");
+        }
+
+        localStorage.setItem("fullLyrics", original_lyrics);
+        localStorage.setItem("translatedLyrics", translated_lyrics);
+        
+      } catch (translateErr) {
+        console.error(translateErr);
+        translatedBox.textContent = "Error translating lyrics.";
+      }
+    });
+
+  // RESTART BUTTON: restarts form
+  document.getElementById("restartButton").addEventListener("click", () => {
+    // clears text inputs
+    document.getElementById("song_title").value = "";
+    document.getElementById("artist").value = "";
+
+    // resets dropdown menus
+    document.getElementById("original_language").selectedIndex = 0;
+    document.getElementById("target_language").selectedIndex = 0;
+
+    // clears the preview text
+    originalBox.textContent = "";
+    translatedBox.textContent = "";
+
+    console.log("Form Restarted");
+  });
+
+  // FULL LYRICS BUTTON: opens the full_lyrics.html page and shows the lyrics
+  document.getElementById("fullLyricsButton").addEventListener("click", () => {
+    const originalLyrics = originalBox.textContent;
+    const translatedLyrics = translatedBox.textContent;
+
+    // Provides an alert if there are no lyrics to display
+    if (!originalLyrics) {
+      alert("!!!No lyrics to display!!!");
+      return;
     }
 
-    const deeplData = await deeplRes.json();
-    const translatedLyrics = deeplData.translations[0].text;
+    // Saves the lyrics so the next page can read them
+    localStorage.setItem("fullLyrics", originalLyrics);
+    localStorage.setItem("translatedLyrics", translatedLyrics);
 
-    // INSERT THE NEW TRANSLATION
-    const { data } = await supabase
-      .from("lyrics_data")
-      .insert([
-        {
-          title,
-          artist,
-          original_lang: originalLang,
-          target_lang: targetLang,
-          original_lyrics: originalLyrics,
-          translated_lyrics: translatedLyrics,
-        },
-      ])
-      .select();
+    // Goes to the full lyrics page
+    window.location.href = "full_lyrics.html";
+  });
+};
 
-    return res.status(201).json(data[0]);
-  } catch (extra_err) {
-    console.error(extra_err);
-    return res.status(500).json({ error: extra_err.message });
+// fetching the lyrics
+async function getLyrics(artist, title) {
+  try {
+    const res = await fetch(
+      `https://api.lyrics.ovh/v1/${artist}/${title}`
+    );
+    const data = await res.json();
+
+    if (data.lyrics) {
+      return data.lyrics;
+    } else {
+      return "Lyrics not found";
+    }
+  } catch (fetch_lyrics_error) {
+    console.error("Error fetching lyrics:", fetch_lyrics_error);
+    return "Error fetching lyrics";
   }
 }

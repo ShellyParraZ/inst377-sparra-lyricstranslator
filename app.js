@@ -4,19 +4,23 @@ const bodyParser = require("body-parser");
 const supabaseClient = require("@supabase/supabase-js");
 const validator = require("validator/lib/isISO6391");
 
-
 const app = express();
 const port = 3000;
 
 app.use(bodyParser.json());
+app.use(express.static(__dirname + "/public"));
 
 // Initialize Supabase Client
 const supabase_URL = process.env.SUPABASE_URL;
 const supabase_Key = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabase_URL, supabase_Key);
 
+app.get("/home_page", (req, res) => {
+  res.sendFile(__dirname + "/public/home_page.html");
+});
+
 // get form submissions
-app.get("/home_page", async (req, res) => {
+app.get("/api/home_page", async (req, res) => {
   console.log("Attempting to GET all form submissions.");
 
   const { data, error } = await supabase.from("lyrics_data").select();
@@ -31,7 +35,7 @@ app.get("/home_page", async (req, res) => {
   }
 });
 
-app.post("/home_page", async (req, res) => {
+app.post("/api/home_page", async (req, res) => {
   // Shows up in Terminal
   console.log("Adding song for translation.");
   console.log("Request", req.body);
@@ -88,6 +92,18 @@ app.post("/home_page", async (req, res) => {
   }
 
   res.send(req.body);
+});
+
+app.get("/api/popular", async (req, res) => {
+  try {
+    const response = await fetch(
+      "https://itunes.apple.com/search?term=pop&entity=song&limit=10"
+    );
+    const data = await response.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch popular songs" });
+  }
 });
 
 app.listen(port, () => {
