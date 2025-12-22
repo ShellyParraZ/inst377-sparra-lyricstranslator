@@ -18,7 +18,7 @@ This application will be specifically tailored for iOS devices because a signifi
 
 ### 1. Installation
 #### Dependencies:
-      * npm install
+          - npm install
 ###### This is significant as it will install all these packages: express, body-parser, dotenv, @supabase/supabase-js, validator, nodemon.
 
 #### Clone the Repository
