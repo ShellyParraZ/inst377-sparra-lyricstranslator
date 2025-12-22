@@ -1,16 +1,32 @@
 {
-  "name": "inst377-lyrics-translator",
+  "name": "inst377-sparra-lyricstranslator",
   "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "@supabase/supabase-js": "^2.39.0",
-    "next": "^16.1.0",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3"
+  "description": "Web application for final project. It will provide a translation of lyrics.",
+  "homepage": "https://github.com/ShellyParraZ/inst377-sparra-lyricstranslator#readme",
+  "bugs": {
+    "url": "https://github.com/ShellyParraZ/inst377-sparra-lyricstranslator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShellyParraZ/inst377-sparra-lyricstranslator.git"
+  },
+  "license": "ISC",
+  "author": "Shelly Parra",
+  "type": "commonjs",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "start": "nodemon -e '*'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
+    "body-parser": "^2.2.1",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "nodemon": "^3.1.11",
+    "validator": "^13.15.26"
   }
 }

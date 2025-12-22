@@ -2,6 +2,11 @@
   <head>
     <title>INST 377 Final Project</title>
     <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
   </head>
   <body style="background-color: rgb(157, 188, 226)">
     <header>
@@ -54,6 +59,9 @@
     </div>
     <!--Full Lyrics Button-->
     <button id="fullLyricsButton" type="button">View Full Lyrics</button>
+    <!--Top Songs Chart-->
+    <h2>Top 10 Popular Songs</h2>
+    <div id="popularSongsChart"></div>
   </body>
   <!--Javascript Section-->
   <script>
@@ -154,6 +162,30 @@
         });
       }
       populateDropdowns();
+
+      // --- Simple Top 10 Popular Songs Chart ---
+      fetch("/api/popular")
+        .then((res) => res.json())
+        .then((data) => {
+          const chartDataArray = [["Song", "Popularity"]];
+          data.results.forEach((song, index) => {
+            chartDataArray.push([song.trackName, 10 - index]); // simple descending numbers
+          });
+
+          google.charts.load("current", { packages: ["corechart"] });
+          google.charts.setOnLoadCallback(() => {
+            const chartData =
+              google.visualization.arrayToDataTable(chartDataArray);
+            const options = {
+              title: "Top 10 Popular Songs",
+              legend: { position: "none" },
+            };
+            const chart = new google.visualization.ColumnChart(
+              document.getElementById("popularSongsChart")
+            );
+            chart.draw(chartData, options);
+          });
+        });
 
       // USER: clicks Translate button
       // COLLECT all the details

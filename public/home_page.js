@@ -10,7 +10,7 @@ const supabase = createClient(
 const DEEPL_API_KEY = process.env.DEEPL_API_KEY;
 
 export default async function handler(req, res) {
-  // blocks everything except POST
+  // Blocks everything except POST
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   const { title, artist, originalLang, targetLang, originalLyrics } = req.body;
 
   if (!title || !artist || !originalLang || !targetLang || !originalLyrics) {
-    return res.status(400).json({ error: "Missing required inputs" });
+    return res.status(400).json({ error: "!!!Missing required inputs!!!" });
   }
 
   try {
@@ -51,15 +51,16 @@ export default async function handler(req, res) {
       }),
     });
 
-    const deeplData = await deeplRes.json();
-    if (!deeplData.translations || !deeplData.translations[0].text) {
-      throw new Error("!!!DeepL translation failed!!!");
+    if (!deeplRes.ok) {
+      const text = await deeplRes.text();
+      throw new Error(`DeepL API error: ${text}`);
     }
 
+    const deeplData = await deeplRes.json();
     const translatedLyrics = deeplData.translations[0].text;
 
     // INSERT THE NEW TRANSLATION
-    const { data, error: insertError } = await supabase
+    const { data } = await supabase
       .from("lyrics_data")
       .insert([
         {
@@ -72,8 +73,6 @@ export default async function handler(req, res) {
         },
       ])
       .select();
-
-    if (insertError) throw insertError;
 
     return res.status(201).json(data[0]);
   } catch (extra_err) {

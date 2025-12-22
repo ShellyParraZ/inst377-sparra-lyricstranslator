@@ -112,6 +112,11 @@ hr {
   white-space: pre-wrap;
 }
 
+.popularSongsChart {
+  width: 700px;
+  height: 400px;
+}
+
 /* Full Lyrics Page */
 
 #h2_FL {
