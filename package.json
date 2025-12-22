@@ -13,7 +13,7 @@
   "license": "ISC",
   "author": "Shelly Parra",
   "type": "commonjs",
-  "main": "app.js",
+  "main": "index.js",
   "directories": {
     "doc": "docs"
   },

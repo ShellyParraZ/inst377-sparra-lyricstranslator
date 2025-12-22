@@ -20,7 +20,7 @@ app.get("/home_page", (req, res) => {
 });
 
 // get form submissions
-app.get("/api/home_page", async (req, res) => {
+app.get("/home_page", async (req, res) => {
   console.log("Attempting to GET all form submissions.");
 
   const { data, error } = await supabase.from("lyrics_data").select();
@@ -35,7 +35,7 @@ app.get("/api/home_page", async (req, res) => {
   }
 });
 
-app.post("/api/home_page", async (req, res) => {
+app.post("/home_page", async (req, res) => {
   // Shows up in Terminal
   console.log("Adding song for translation.");
   console.log("Request", req.body);
@@ -94,7 +94,7 @@ app.post("/api/home_page", async (req, res) => {
   res.send(req.body);
 });
 
-app.get("/api/popular", async (req, res) => {
+app.get("/popular", async (req, res) => {
   try {
     const response = await fetch(
       "https://itunes.apple.com/search?term=pop&entity=song&limit=10"
