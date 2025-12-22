@@ -15,8 +15,8 @@ const supabase_URL = process.env.SUPABASE_URL;
 const supabase_Key = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabase_URL, supabase_Key);
 
-app.get("/home_page", (req, res) => {
-  res.sendFile(__dirname + "/public/home_page.html");
+app.get("/", (req, res) => {
+  res.sendFile("public/home_page.html", { root: __dirname });
 });
 
 // get form submissions
@@ -47,7 +47,7 @@ app.post("/home_page", async (req, res) => {
   const original_lyrics = req.body.original_lyrics;
   const translated_lyrics = req.body.translated_lyrics;
 
-  if (!validator(original_lang)) {
+  if (!validator(original_lang.toLowerCase())) {
     console.error(
       `Original Language Abbreviation: ${original_lang} is invalid.`
     );
@@ -59,7 +59,7 @@ app.post("/home_page", async (req, res) => {
     res.send(JSON.stringify(errorJSON));
     return;
   }
-  if (!validator(target_lang)) {
+  if (!validator(target_lang.toLowerCase())) {
     console.error(`Target Language Abbreviation: ${target_lang} is invalid.`);
     res.statusCode = 400;
     const errorJSON = {
@@ -90,8 +90,6 @@ app.post("/home_page", async (req, res) => {
   } else {
     res.send(data);
   }
-
-  res.send(req.body);
 });
 
 app.get("/popular", async (req, res) => {

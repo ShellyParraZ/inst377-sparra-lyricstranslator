@@ -79,20 +79,23 @@ window.onload = () => {
   ];
 
   // adding the languages to the original_language and target_language dropdown menus
-  languages.forEach((lang) => {
-    const option1 = document.createElement("option");
-    option1.value = lang.code;
-    option1.textContent = lang.name;
-    original_language.appendChild(option1);
+  sourceLangDeepL.forEach((lang) => {
+    const option = document.createElement("option");
+    option.value = lang.code;
+    option.textContent = lang.name;
+    original_language.appendChild(option);
+  });
 
-    const option2 = document.createElement("option");
-    option2.value = lang.code;
-    option2.textContent = lang.name;
-    target_language.appendChild(option2);
+  // Populate target language dropdown
+  targetLangDeepL.forEach((lang) => {
+    const option = document.createElement("option");
+    option.value = lang.code;
+    option.textContent = lang.name;
+    target_language.appendChild(option);
   });
 
   // --- Simple Top 10 Popular Songs Chart ---
-  fetch("/api/popular")
+  fetch("/popular")
     .then((res) => res.json())
     .then((data) => {
       const chartDataArray = [["Song", "Popularity"]];
@@ -116,13 +119,14 @@ window.onload = () => {
 
   // USER: clicks Translate button
   // COLLECT all the details
+  // TRANSLATES SONG
   document
     .getElementById("songForm")
     .addEventListener("submit", async (details) => {
       details.preventDefault(); // stop page from refreshing
 
-      const title = document.getElementById("song_title").value;
-      const artist = document.getElementById("artist").value;
+      const title = document.getElementById("song_title").value.trim();
+      const artist = document.getElementById("artist").value.trim();
       const originalLang = original_language.value;
       const targetLang = target_language.value;
 
@@ -144,8 +148,8 @@ window.onload = () => {
           body: JSON.stringify({
             artist,
             title,
-            original_lang: originalLang,
-            target_lang: targetLang,
+            original_lang: originalLang.toLowerCase(),
+            target_lang: targetLang.toLowerCase(),
             original_lyrics: originalLyrics,
             translated_lyrics: originalLyrics,
           }),
@@ -157,9 +161,8 @@ window.onload = () => {
           throw new Error(data.error || "Translation failed");
         }
 
-        localStorage.setItem("fullLyrics", original_lyrics);
-        localStorage.setItem("translatedLyrics", translated_lyrics);
-        
+        localStorage.setItem("fullLyrics", originalLyrics);
+        localStorage.setItem("translatedLyrics", translatedLyrics);
       } catch (translateErr) {
         console.error(translateErr);
         translatedBox.textContent = "Error translating lyrics.";
@@ -206,18 +209,41 @@ window.onload = () => {
 // fetching the lyrics
 async function getLyrics(artist, title) {
   try {
-    const res = await fetch(
-      `https://api.lyrics.ovh/v1/${artist}/${title}`
-    );
+    const res = await fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`);
     const data = await res.json();
 
     if (data.lyrics) {
       return data.lyrics;
     } else {
-      return "Lyrics not found";
+      return "Lyrics not found.";
     }
   } catch (fetch_lyrics_error) {
     console.error("Error fetching lyrics:", fetch_lyrics_error);
-    return "Error fetching lyrics";
+    return "Error fetching lyrics.";
+  }
+}
+
+// translating lyrics
+async function translateLyrics(text, sourceLang, targetLang) {
+  try {
+    const res = await fetch("https://libretranslate.com/translate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        q: text,
+        source: sourceLang,
+        target: targetLang,
+        format: "text",
+      }),
+    });
+    const data = await res.json();
+    if (data.translatedText) {
+      return data.translatedText;
+    } else {
+      ("Translation not found.");
+    }
+  } catch (fetch_translation_err) {
+    console.error("Error translating lyrics:", fetch_translation_err);
+    return "Error translating lyrics.";
   }
 }
